@@ -1,5 +1,5 @@
-defmodule BankWeb.AccountView do
-  use BankWeb, :view
+defmodule TellerWeb.AccountView do
+  use TellerWeb, :view
 
   def render("index.json", %{data: data}) do
     %{data: data}

@@ -1,4 +1,4 @@
-defmodule BankWeb.Account do
+defmodule TellerWeb.Account do
   def index do
     "accounts"
   end
