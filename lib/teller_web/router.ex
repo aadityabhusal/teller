@@ -2,28 +2,34 @@ defmodule TellerWeb.Router do
   use TellerWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {TellerWeb.LayoutView, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {TellerWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", TellerWeb do
-    pipe_through :browser
+    pipe_through(:browser)
+    get("/", PageController, :index)
 
-    get "/", PageController, :index
+    scope "/accounts" do
+      get("/", AccountController, :index)
+
+      scope "/:account_id" do
+        get("/", AccountController, :get_account)
+        get("/details", AccountController, :get_details)
+        get("/balances", AccountController, :get_balances)
+        get("/transactions", AccountController, :get_transactions)
+        get("/transactions/:transaction_id", AccountController, :get_transaction)
+      end
+    end
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", TellerWeb do
-  #   pipe_through :api
-  # end
 
   # Enables LiveDashboard only for development
   #
@@ -36,8 +42,8 @@ defmodule TellerWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
-      live_dashboard "/dashboard", metrics: TellerWeb.Telemetry
+      pipe_through(:browser)
+      live_dashboard("/dashboard", metrics: TellerWeb.Telemetry)
     end
   end
 end
