@@ -1,25 +1,25 @@
 defmodule TellerWeb.Account do
   def index do
-    "accounts"
+    %{data: "accounts"}
   end
 
   def get_account do
-    "get_account"
+    %{data: "get_account"}
   end
 
   def get_details do
-    "get_details"
+    %{data: "get_details"}
   end
 
   def get_balances do
-    "get_balances"
+    %{data: "get_balances"}
   end
 
   def get_transactions do
-    "get_transactions"
+    %{data: "get_transactions"}
   end
 
   def get_transaction do
-    "get_transaction"
+    %{data: "get_transaction"}
   end
 end
