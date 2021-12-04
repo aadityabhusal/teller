@@ -2,7 +2,7 @@ defmodule TellerWeb.Account.Transactions do
   @api_url "http://localhost:4000"
 
   def get_transactions do
-    %{data: "get_transactions"}
+    [get_transaction()]
   end
 
   def get_transaction do
