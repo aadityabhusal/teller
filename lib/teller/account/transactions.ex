@@ -41,7 +41,7 @@ defmodule TellerWeb.Account.Transactions do
     }
   end
 
-  def get_merchant(at) do
+  defp get_merchant(at) do
     merchants = [
       "Uber",
       "Uber Eats",
@@ -125,5 +125,39 @@ defmodule TellerWeb.Account.Transactions do
     ]
 
     Enum.at(merchants, at)
+  end
+
+  defp get_merchant_category(at) do
+    merchant_categories = [
+      "accommodation",
+      "advertising",
+      "bar",
+      "charity",
+      "clothing",
+      "dining",
+      "education",
+      "electronics",
+      "entertainment",
+      "fuel",
+      "groceries",
+      "health",
+      "home",
+      "income",
+      "insurance",
+      "investment",
+      "loan",
+      "office",
+      "phone",
+      "service",
+      "shopping",
+      "software",
+      "sport",
+      "tax",
+      "transport",
+      "transportation",
+      "utilities"
+    ]
+
+    Enum.at(merchant_categories, at)
   end
 end
