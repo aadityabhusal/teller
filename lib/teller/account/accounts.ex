@@ -1,11 +1,11 @@
 defmodule TellerWeb.Account.Accounts do
   @api_url "http://localhost:4000"
 
-  def get_accounts do
-    [get_account()]
+  def get_accounts(%{token: token}) do
+    [get_account(%{token: token})]
   end
 
-  def get_account do
+  def get_account(%{token: token}) do
     enrollment_id = "enr_nmf3f7758gpc7b5cd6000"
     account_id = "acc_nmfff743stmo5n80t4000"
     account_number = "891824333836"
@@ -14,6 +14,7 @@ defmodule TellerWeb.Account.Accounts do
     institution_id = institution_name |> String.downcase() |> String.replace(" ", "-")
 
     account = %{
+      token: token,
       currency: "USD",
       enrollment_id: enrollment_id,
       id: account_id,
