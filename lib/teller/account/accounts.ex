@@ -10,8 +10,8 @@ defmodule TellerWeb.Account.Accounts do
     account_id = "acc_nmfff743stmo5n80t4000"
     account_number = "891824333836"
 
-    institution_id = "citibank"
     institution_name = "Citibank"
+    institution_id = institution_name |> String.downcase() |> String.replace(" ", "-")
 
     account = %{
       currency: "USD",
