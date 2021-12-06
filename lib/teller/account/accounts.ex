@@ -36,4 +36,25 @@ defmodule TellerWeb.Account.Accounts do
 
     account
   end
+
+  defp get_account_name(at) do
+    account_names = [
+      "My Checking",
+      "Jimmy Carter",
+      "Ronald Reagan",
+      "George H. W. Bush",
+      "Bill Clinton",
+      "George W. Bush",
+      "Barack Obama",
+      "Donald Trump"
+    ]
+
+    Enum.at(account_names, at)
+  end
+
+  defp get_institution_name(at) do
+    institution_names = ["Chase", "Bank of America", "Wells Fargo", "Citibank", "Capital One"]
+
+    Enum.at(institution_names, at)
+  end
 end
