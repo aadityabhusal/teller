@@ -36,7 +36,7 @@ defmodule TellerWeb.Account.Accounts do
     }
   end
 
-  defp get_account_name(at) do
+  defp get_account_name(number) do
     account_names = [
       "My Checking",
       "Jimmy Carter",
@@ -48,12 +48,13 @@ defmodule TellerWeb.Account.Accounts do
       "Donald Trump"
     ]
 
+    at = Integer.mod(number, length(account_names))
     Enum.at(account_names, at)
   end
 
-  defp get_institution_name(at) do
+  defp get_institution_name(number) do
     institution_names = ["Chase", "Bank of America", "Wells Fargo", "Citibank", "Capital One"]
-
+    at = Integer.mod(number, length(institution_names))
     Enum.at(institution_names, at)
   end
 end
