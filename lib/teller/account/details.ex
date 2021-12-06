@@ -6,7 +6,7 @@ defmodule TellerWeb.Account.Details do
     account_number = "891824333836"
     routing_number = "581559698"
 
-    details = %{
+    %{
       account_id: account_id,
       account_number: account_number,
       links: %{
@@ -17,7 +17,5 @@ defmodule TellerWeb.Account.Details do
         ach: routing_number
       }
     }
-
-    details
   end
 end

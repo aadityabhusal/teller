@@ -18,7 +18,7 @@ defmodule TellerWeb.Account.Transactions do
     transaction_id = "txn_nmfo2gtnstmo5n80t4004"
     account_id = "acc_nmfff743stmo5n80t4000"
 
-    transaction = %{
+    %{
       account_id: account_id,
       amount: amount,
       date: date,

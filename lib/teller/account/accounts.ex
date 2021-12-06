@@ -14,7 +14,7 @@ defmodule TellerWeb.Account.Accounts do
     institution_name = get_institution_name(0)
     institution_id = institution_name |> String.downcase() |> String.replace(" ", "-")
 
-    account = %{
+    %{
       token: token,
       currency: "USD",
       enrollment_id: enrollment_id,
@@ -34,8 +34,6 @@ defmodule TellerWeb.Account.Accounts do
       subtype: "checking",
       type: "depository"
     }
-
-    account
   end
 
   defp get_account_name(at) do
