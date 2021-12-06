@@ -11,8 +11,9 @@ defmodule TellerWeb.Account.Transactions do
     date = "2021-08-12"
     running_balance = 33648.09
 
-    organization = "In-N-Out Burger"
+    organization = get_merchant(0)
     counterparty_name = organization |> String.upcase() |> String.replace("-", " ")
+    category = get_merchant_category(0)
 
     transaction_id = "txn_nmfo2gtnstmo5n80t4004"
     account_id = "acc_nmfff743stmo5n80t4000"
@@ -23,7 +24,7 @@ defmodule TellerWeb.Account.Transactions do
       date: date,
       description: organization,
       details: %{
-        category: "dining",
+        category: category,
         counterparty: %{
           name: counterparty_name,
           type: "organization"
