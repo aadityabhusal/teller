@@ -9,8 +9,9 @@ defmodule TellerWeb.Account.Accounts do
     enrollment_id = "enr_nmf3f7758gpc7b5cd6000"
     account_id = "acc_nmfff743stmo5n80t4000"
     account_number = "891824333836"
+    account_name = get_account_name(0)
 
-    institution_name = "Citibank"
+    institution_name = get_institution_name(0)
     institution_id = institution_name |> String.downcase() |> String.replace(" ", "-")
 
     account = %{
@@ -29,7 +30,7 @@ defmodule TellerWeb.Account.Accounts do
         self: "#{@api_url}/accounts/#{account_id}",
         transactions: "#{@api_url}/accounts/#{account_id}/transactions"
       },
-      name: "My Checking",
+      name: account_name,
       subtype: "checking",
       type: "depository"
     }
