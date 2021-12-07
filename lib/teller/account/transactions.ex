@@ -3,47 +3,68 @@ defmodule TellerWeb.Account.Transactions do
 
   def get_transactions(number, account_id) do
     if account_id === "acc_#{number}" do
-      [get_transaction(number, account_id, "txn_12345")]
+      today = Date.utc_today()
+      start = Date.add(today, -90)
+      range = Date.range(start, today)
+      transactions = Enum.map(range, fn date -> create_transaction(number, account_id, date) end)
+
+      transactions
     else
       %{error: "Invalid Account Id"}
     end
   end
 
   def get_transaction(number, account_id, transaction_id) do
-    amount = 90.54
-    date = "2021-08-12"
-    running_balance = 33648.09
-
-    organization = get_merchant(number)
-    counterparty_name = organization |> String.upcase() |> String.replace("-", " ")
-    category = get_merchant_category(number)
-
     if account_id === "acc_#{number}" do
-      %{
-        account_id: account_id,
-        amount: amount,
-        date: date,
-        description: organization,
-        details: %{
-          category: category,
-          counterparty: %{
-            name: counterparty_name,
-            type: "organization"
-          },
-          processing_status: "complete"
-        },
-        id: transaction_id,
-        links: %{
-          account: "#{@api_url}/accounts/#{account_id}",
-          self: "#{@api_url}/accounts/#{account_id}/transactions/#{transaction_id}"
-        },
-        running_balance: running_balance,
-        status: "posted",
-        type: "ach"
-      }
+      today = Date.utc_today()
+      start = Date.add(today, -90)
+      range = Date.range(start, today)
+      transactions = Enum.map(range, fn date -> create_transaction(number, account_id, date) end)
+      transaction = Enum.find(transactions, fn txn -> txn.id === transaction_id end)
+
+      if(transaction) do
+        transaction
+      else
+        %{error: "Invalid Transaction Id"}
+      end
     else
       %{error: "Invalid Account Id"}
     end
+  end
+
+  defp create_transaction(number, account_id, date) do
+    string_date = Date.to_string(date)
+    transaction_number = :erlang.phash2("#{number}#{string_date}")
+
+    amount = 90.54
+    running_balance = 33648.09
+
+    organization = get_merchant(transaction_number)
+    counterparty_name = organization |> String.upcase() |> String.replace("-", " ")
+    category = get_merchant_category(transaction_number)
+
+    %{
+      account_id: account_id,
+      amount: amount,
+      date: date,
+      description: organization,
+      details: %{
+        category: category,
+        counterparty: %{
+          name: counterparty_name,
+          type: "organization"
+        },
+        processing_status: "complete"
+      },
+      id: "txn_#{transaction_number}",
+      links: %{
+        account: "#{@api_url}/accounts/#{account_id}",
+        self: "#{@api_url}/accounts/#{account_id}/transactions/txn_#{transaction_number}"
+      },
+      running_balance: running_balance,
+      status: "posted",
+      type: "card_payment"
+    }
   end
 
   defp get_merchant(number) do
