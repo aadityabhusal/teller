@@ -2,14 +2,14 @@ defmodule TellerWeb.AccountController do
   use TellerWeb, :controller
   alias TellerWeb.Account
 
-  @token "test_56789"
+  @number 56789
 
   def index(conn, _params) do
-    render(conn, "index.json", data: Account.Accounts.get_accounts(%{token: "test_1234"}))
+    render(conn, "index.json", data: Account.Accounts.get_accounts(@number))
   end
 
   def get_account(conn, _params) do
-    render(conn, "get_account.json", data: Account.Accounts.get_account(%{token: "test_1234"}))
+    render(conn, "get_account.json", data: Account.Accounts.get_account(@number))
   end
 
   def get_details(conn, _params) do

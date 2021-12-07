@@ -1,36 +1,31 @@
 defmodule TellerWeb.Account.Accounts do
   @api_url "http://localhost:4000"
 
-  def get_accounts(%{token: token}) do
-    [get_account(%{token: token})]
+  def get_accounts(number) do
+    [get_account(number)]
   end
 
-  def get_account(%{token: token}) do
-    enrollment_id = "enr_nmf3f7758gpc7b5cd6000"
-    account_id = "acc_nmfff743stmo5n80t4000"
-    account_number = "891824333836"
-    account_name = get_account_name(0)
-
-    institution_name = get_institution_name(0)
+  def get_account(number) do
+    account_id = "acc_#{number}"
+    institution_name = get_institution_name(number)
     institution_id = institution_name |> String.downcase() |> String.replace(" ", "-")
 
     %{
-      token: token,
       currency: "USD",
-      enrollment_id: enrollment_id,
+      enrollment_id: "enr_#{number}",
       id: account_id,
       institution: %{
         id: institution_id,
         name: institution_name
       },
-      last_four: String.slice(account_number, -4..-1),
+      last_four: String.slice(Integer.to_string(number), -4..-1),
       links: %{
         balances: "#{@api_url}/accounts/#{account_id}/balances",
         details: "#{@api_url}/accounts/#{account_id}/details",
         self: "#{@api_url}/accounts/#{account_id}",
         transactions: "#{@api_url}/accounts/#{account_id}/transactions"
       },
-      name: account_name,
+      name: get_account_name(number),
       subtype: "checking",
       type: "depository"
     }
