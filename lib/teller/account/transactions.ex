@@ -6,9 +6,14 @@ defmodule TellerWeb.Account.Transactions do
       today = Date.utc_today()
       start = Date.add(today, -90)
       range = Date.range(start, today)
-      transactions = Enum.map(range, fn date -> create_transaction(number, account_id, date) end)
 
-      transactions
+      Enum.flat_map(range, fn date ->
+        number_of_transaction = Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
+
+        Enum.map(0..number_of_transaction, fn i ->
+          create_transaction(i, number, account_id, date)
+        end)
+      end)
     else
       %{error: "Invalid Account Id"}
     end
@@ -25,9 +30,8 @@ defmodule TellerWeb.Account.Transactions do
     end
   end
 
-  defp create_transaction(number, account_id, date) do
-    string_date = Date.to_string(date)
-    transaction_number = :erlang.phash2("#{number}#{string_date}")
+  defp create_transaction(index, number, account_id, date) do
+    transaction_number = :erlang.phash2("#{number}#{Date.to_string(date)}n#{index}")
 
     amount = 90.54
     running_balance = 33648.09
