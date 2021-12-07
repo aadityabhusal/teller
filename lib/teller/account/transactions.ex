@@ -37,7 +37,7 @@ defmodule TellerWeb.Account.Transactions do
   end
 
   defp get_count_transactions(transactions, count) do
-    if String.to_integer(count) do
+    if count do
       Enum.slice(transactions, 0, String.to_integer(count))
     else
       transactions
