@@ -1,27 +1,54 @@
 defmodule TellerWeb.Account.Transactions do
   @api_url "http://localhost:4000"
 
-  def get_transactions(number, account_id) do
+  def get_transactions(number, account_id, from_id \\ nil, count \\ nil) do
     if account_id === "acc_#{number}" do
       today = Date.utc_today()
       start = Date.add(today, -90)
       range = Date.range(start, today)
 
-      Enum.flat_map(range, fn date ->
-        number_of_transaction = Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
-
-        Enum.map(0..number_of_transaction, fn i ->
-          create_transaction(i, number, account_id, date)
-        end)
-      end)
+      range
+      |> get_date_transactions(number, account_id)
+      |> get_from_id_transactions(from_id)
+      |> get_count_transactions(count)
     else
       %{error: "Invalid Account Id"}
     end
   end
 
+  defp get_date_transactions(date_range, number, account_id) do
+    Enum.flat_map(date_range, fn date ->
+      number_of_transaction = Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
+
+      Enum.map(0..number_of_transaction, fn i ->
+        create_transaction(i, number, account_id, date)
+      end)
+    end)
+  end
+
+  defp get_from_id_transactions(transactions, from_id) do
+    if from_id do
+      index = Enum.find_index(transactions, fn txn -> txn.id === from_id end)
+      {_, result} = Enum.split(transactions, index)
+      result
+    else
+      transactions
+    end
+  end
+
+  defp get_count_transactions(transactions, count) do
+    if String.to_integer(count) do
+      Enum.slice(transactions, 0, String.to_integer(count))
+    else
+      transactions
+    end
+  end
+
   def get_transaction(number, account_id, transaction_id) do
-    transactions = get_transactions(number, account_id)
-    transaction = Enum.find(transactions, fn txn -> txn.id === transaction_id end)
+    transaction =
+      number
+      |> get_transactions(account_id)
+      |> Enum.find(fn txn -> txn.id === transaction_id end)
 
     if(transaction) do
       transaction

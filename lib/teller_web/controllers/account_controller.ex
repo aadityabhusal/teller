@@ -24,9 +24,12 @@ defmodule TellerWeb.AccountController do
     )
   end
 
-  def get_transactions(conn, %{"account_id" => account_id}) do
+  def get_transactions(conn, %{"account_id" => account_id} = params) do
+    from_id = params["from_id"]
+    count = params["count"]
+
     render(conn, "get_transactions.json",
-      data: Account.Transactions.get_transactions(conn.assigns.token, account_id)
+      data: Account.Transactions.get_transactions(conn.assigns.token, account_id, from_id, count)
     )
   end
 
