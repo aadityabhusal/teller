@@ -2,12 +2,13 @@ defmodule TellerWeb.Account.Accounts do
   @api_url "http://localhost:4000"
 
   def get_accounts(number) do
-    [get_account(number, number)]
+    [get_account(number, "acc_#{number}")]
   end
 
   def get_account(number, account_id) do
     institution_name = get_institution_name(number)
     institution_id = institution_name |> String.downcase() |> String.replace(" ", "-")
+    account_number = :erlang.phash2(number)
 
     if account_id === "acc_#{number}" do
       %{
@@ -18,7 +19,7 @@ defmodule TellerWeb.Account.Accounts do
           id: institution_id,
           name: institution_name
         },
-        last_four: String.slice("#{number}", -4..-1),
+        last_four: String.slice("#{account_number}", -4..-1),
         links: %{
           balances: "#{@api_url}/accounts/#{account_id}/balances",
           details: "#{@api_url}/accounts/#{account_id}/details",
