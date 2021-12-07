@@ -15,20 +15,13 @@ defmodule TellerWeb.Account.Transactions do
   end
 
   def get_transaction(number, account_id, transaction_id) do
-    if account_id === "acc_#{number}" do
-      today = Date.utc_today()
-      start = Date.add(today, -90)
-      range = Date.range(start, today)
-      transactions = Enum.map(range, fn date -> create_transaction(number, account_id, date) end)
-      transaction = Enum.find(transactions, fn txn -> txn.id === transaction_id end)
+    transactions = get_transactions(number, account_id)
+    transaction = Enum.find(transactions, fn txn -> txn.id === transaction_id end)
 
-      if(transaction) do
-        transaction
-      else
-        %{error: "Invalid Transaction Id"}
-      end
+    if(transaction) do
+      transaction
     else
-      %{error: "Invalid Account Id"}
+      %{error: "Invalid Transaction Id"}
     end
   end
 
