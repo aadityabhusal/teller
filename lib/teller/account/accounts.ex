@@ -18,7 +18,7 @@ defmodule TellerWeb.Account.Accounts do
         id: institution_id,
         name: institution_name
       },
-      last_four: String.slice(Integer.to_string(number), -4..-1),
+      last_four: String.slice("#{number}", -4..-1),
       links: %{
         balances: "#{@api_url}/accounts/#{account_id}/balances",
         details: "#{@api_url}/accounts/#{account_id}/details",
