@@ -34,9 +34,9 @@ defmodule TellerWeb.Account.Transactions do
 
     {result, _total} =
       Enum.flat_map_reduce(date_range, initial_amount, fn date, outer_acc ->
-        number_of_transaction = Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
-
-        Enum.map_reduce(0..number_of_transaction, outer_acc, fn i, acc ->
+        0..Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
+        |> Enum.drop(1)
+        |> Enum.map_reduce(outer_acc, fn i, acc ->
           create_transaction(i, number, account_id, date, acc)
         end)
       end)
