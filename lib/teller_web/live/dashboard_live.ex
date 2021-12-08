@@ -7,6 +7,7 @@ defmodule TellerWeb.DashboardLive do
     {:ok, assign(socket, :requests, %{})}
   end
 
+  @impl true
   def render(assigns) do
     ~L"""
     <div class="container">
@@ -22,14 +23,14 @@ defmodule TellerWeb.DashboardLive do
           <div class="table-row">
             <div>No Data to Display</div>
           </div>
-        <%= end %>
+        <% end %>
     
         <%= for {req_path, req_count} <- @requests do %>
         <div class="table-row">
           <div><%= req_path %></div>
           <div><%= req_count %></div>
         </div>
-        <%= end %>
+        <% end %>
       </div>
     </div>
     """
