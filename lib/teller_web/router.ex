@@ -21,6 +21,7 @@ defmodule TellerWeb.Router do
     live("/", DashboardLive)
 
     scope "/accounts" do
+      pipe_through(:api)
       get("/", AccountController, :index)
 
       scope "/:account_id" do

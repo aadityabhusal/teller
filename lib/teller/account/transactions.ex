@@ -2,15 +2,18 @@ defmodule TellerWeb.Account.Transactions do
   @api_url "http://localhost:4000"
 
   def get_transaction(number, account_id, transaction_id) do
-    transaction =
-      number
-      |> get_transactions(account_id)
-      |> Enum.find(fn txn -> txn.id === transaction_id end)
+    transactions = get_transactions(number, account_id)
 
-    if(transaction) do
-      transaction
+    if is_list(transactions) do
+      result = Enum.find(transactions, fn txn -> txn.id == transaction_id end)
+
+      if length(result) > 0 do
+        result
+      else
+        %{error: "Invalid Transactions Id"}
+      end
     else
-      %{error: "Invalid Transaction Id"}
+      %{error: "Invalid Account Id"}
     end
   end
 

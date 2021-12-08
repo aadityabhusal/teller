@@ -7,10 +7,10 @@ defmodule TellerWeb.Account.Balances do
     today = Date.utc_today()
     start = Date.add(today, -1)
 
-    available = get_min_amount(transactions, today)
-    ledger = get_min_amount(transactions, start)
+    if account_id === "acc_#{number}" and transactions do
+      available = get_min_amount(transactions, today)
+      ledger = get_min_amount(transactions, start)
 
-    if account_id === "acc_#{number}" do
       %{
         account_id: account_id,
         available: "#{available}",
@@ -27,7 +27,7 @@ defmodule TellerWeb.Account.Balances do
 
   defp get_min_amount(transactions, date) do
     transactions
-    |> Enum.filter(fn txn -> txn.date === date end)
+    |> Enum.filter(fn txn -> txn.date == date end)
     |> Enum.map(fn txn -> txn.running_balance end)
     |> Enum.min()
   end
