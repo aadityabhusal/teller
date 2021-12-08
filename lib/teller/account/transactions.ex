@@ -74,7 +74,7 @@ defmodule TellerWeb.Account.Transactions do
 
     transaction = %{
       account_id: account_id,
-      amount: amount,
+      amount: "#{amount}",
       date: date,
       description: organization,
       details: %{
@@ -90,7 +90,7 @@ defmodule TellerWeb.Account.Transactions do
         account: "#{@api_url}/accounts/#{account_id}",
         self: "#{@api_url}/accounts/#{account_id}/transactions/txn_#{transaction_number}"
       },
-      running_balance: running_balance,
+      running_balance: "#{running_balance}",
       status: "posted",
       type: "card_payment"
     }

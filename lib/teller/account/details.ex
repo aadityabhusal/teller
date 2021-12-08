@@ -8,13 +8,13 @@ defmodule TellerWeb.Account.Details do
     if account_id === "acc_#{number}" do
       %{
         account_id: account_id,
-        account_number: account_number,
+        account_number: "#{account_number}",
         links: %{
           account: "#{@api_url}/accounts/#{account_id}",
           self: "#{@api_url}/accounts/#{account_id}/details"
         },
         routing_numbers: %{
-          ach: routing_number
+          ach: "#{routing_number}"
         }
       }
     else
