@@ -1,7 +1,9 @@
 defmodule TellerWeb.DashboardLive do
   use TellerWeb, :live_view
 
+  @impl true
   def mount(_params, _session, socket) do
+    Phoenix.PubSub.subscribe(Teller.PubSub, "update_requests")
     {:ok, assign(socket, :requests, %{})}
   end
 
@@ -31,5 +33,10 @@ defmodule TellerWeb.DashboardLive do
       </div>
     </div>
     """
+  end
+
+  @impl true
+  def handle_info({:update_requests, path}, socket) do
+    {:noreply, socket |> update(:requests, fn reqs -> Map.update(reqs, path, 1, &(&1 + 1)) end)}
   end
 end
