@@ -1,6 +1,19 @@
 defmodule TellerWeb.Account.Transactions do
   @api_url "http://localhost:4000"
 
+  def get_transaction(number, account_id, transaction_id) do
+    transaction =
+      number
+      |> get_transactions(account_id)
+      |> Enum.find(fn txn -> txn.id === transaction_id end)
+
+    if(transaction) do
+      transaction
+    else
+      %{error: "Invalid Transaction Id"}
+    end
+  end
+
   def get_transactions(number, account_id, from_id \\ nil, count \\ nil) do
     if account_id === "acc_#{number}" do
       today = Date.utc_today()
@@ -17,13 +30,18 @@ defmodule TellerWeb.Account.Transactions do
   end
 
   defp get_date_transactions(date_range, number, account_id) do
-    Enum.flat_map(date_range, fn date ->
-      number_of_transaction = Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
+    initial_amount = number |> Integer.mod(500_000) |> then(fn x -> x + 400_000 end)
 
-      Enum.map(0..number_of_transaction, fn i ->
-        create_transaction(i, number, account_id, date)
+    {result, _total} =
+      Enum.flat_map_reduce(date_range, initial_amount, fn date, outer_acc ->
+        number_of_transaction = Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
+
+        Enum.map_reduce(0..number_of_transaction, outer_acc, fn i, acc ->
+          create_transaction(i, number, account_id, date, acc)
+        end)
       end)
-    end)
+
+    result
   end
 
   defp get_from_id_transactions(transactions, from_id) do
@@ -44,30 +62,17 @@ defmodule TellerWeb.Account.Transactions do
     end
   end
 
-  def get_transaction(number, account_id, transaction_id) do
-    transaction =
-      number
-      |> get_transactions(account_id)
-      |> Enum.find(fn txn -> txn.id === transaction_id end)
-
-    if(transaction) do
-      transaction
-    else
-      %{error: "Invalid Transaction Id"}
-    end
-  end
-
-  defp create_transaction(index, number, account_id, date) do
+  defp create_transaction(index, number, account_id, date, previous) do
     transaction_number = :erlang.phash2("#{number}#{Date.to_string(date)}n#{index}")
 
-    amount = 90.54
-    running_balance = 33648.09
+    amount = transaction_number |> Integer.mod(100_000) |> then(fn x -> -x / 100 end)
+    running_balance = (previous + amount) |> Float.floor(2)
 
     organization = get_merchant(transaction_number)
     counterparty_name = organization |> String.upcase() |> String.replace("-", " ")
     category = get_merchant_category(transaction_number)
 
-    %{
+    transaction = %{
       account_id: account_id,
       amount: amount,
       date: date,
@@ -89,6 +94,8 @@ defmodule TellerWeb.Account.Transactions do
       status: "posted",
       type: "card_payment"
     }
+
+    {transaction, running_balance}
   end
 
   defp get_merchant(number) do
