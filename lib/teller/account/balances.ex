@@ -1,8 +1,14 @@
 defmodule TellerWeb.Account.Balances do
   @api_url "http://localhost:4000"
+  alias TellerWeb.Account.Transactions
 
   def get_balances(number, account_id) do
-    {available, ledger} = {33648.09, 33803.48}
+    transactions = Transactions.get_transactions(number, account_id)
+    today = Date.utc_today()
+    start = Date.add(today, -1)
+
+    available = get_max_amount(transactions, today)
+    ledger = get_max_amount(transactions, start)
 
     if account_id === "acc_#{number}" do
       %{
@@ -17,5 +23,12 @@ defmodule TellerWeb.Account.Balances do
     else
       %{error: "Invalid Account Id"}
     end
+  end
+
+  defp get_max_amount(transactions, date) do
+    transactions
+    |> Enum.filter(fn txn -> txn.date === date end)
+    |> Enum.map(fn txn -> txn.running_balance end)
+    |> Enum.min()
   end
 end
