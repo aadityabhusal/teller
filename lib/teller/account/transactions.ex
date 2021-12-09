@@ -7,10 +7,10 @@ defmodule TellerWeb.Account.Transactions do
     if is_list(transactions) do
       result = Enum.find(transactions, fn txn -> txn.id == transaction_id end)
 
-      if length(result) > 0 do
+      if is_list(result) do
         result
       else
-        %{error: "Invalid Transactions Id"}
+        %{error: "Invalid Transaction Id"}
       end
     else
       %{error: "Invalid Account Id"}
