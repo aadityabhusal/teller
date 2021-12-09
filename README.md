@@ -24,7 +24,7 @@ Example Routes for above token:
   * /accounts/acc_1658961/details
   * /accounts/acc_1658961/balances
   * /accounts/acc_1658961/transactions
-  * /accounts/acc_1658961/transactions/txn_11221497
+  * /accounts/acc_1658961/transactions/txn_128913001
 
 ## Setup
 To start your Phoenix server:
