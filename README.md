@@ -20,11 +20,11 @@ Example Token (for test_user123) - `dGVzdF91c2VyMTIz`
 Example Routes for above token:
 
   * /accounts
-  * /accounts/acc_42978146
-  * /accounts/acc_42978146/details
-  * /accounts/acc_42978146/balances
-  * /accounts/acc_42978146/transactions
-  * /accounts/acc_42978146/transactions/txn_11221497
+  * /accounts/acc_1658961
+  * /accounts/acc_1658961/details
+  * /accounts/acc_1658961/balances
+  * /accounts/acc_1658961/transactions
+  * /accounts/acc_1658961/transactions/txn_11221497
 
 ## Setup
 To start your Phoenix server:
