@@ -1,11 +1,11 @@
 defmodule TellerWeb.Account.Details do
   @api_url "http://localhost:4000"
 
-  def get_details(number, account_id) do
-    account_number = :erlang.phash2(number)
+  def get_details(token, account_id) do
+    account_number = :erlang.phash2(token)
     routing_number = :erlang.phash2(account_number)
 
-    if account_id === "acc_#{number}" do
+    if account_id === "acc_#{token}" do
       %{
         account_id: account_id,
         account_number: "#{account_number}",

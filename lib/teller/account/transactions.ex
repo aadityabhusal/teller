@@ -1,13 +1,13 @@
 defmodule TellerWeb.Account.Transactions do
   @api_url "http://localhost:4000"
 
-  def get_transaction(number, account_id, transaction_id) do
-    transactions = get_transactions(number, account_id)
+  def get_transaction(token, account_id, transaction_id) do
+    transactions = get_transactions(token, account_id)
 
     if is_list(transactions) do
       result = Enum.find(transactions, fn txn -> txn.id == transaction_id end)
 
-      if is_list(result) do
+      if is_map(result) do
         result
       else
         %{error: "Invalid Transaction Id"}
@@ -17,14 +17,14 @@ defmodule TellerWeb.Account.Transactions do
     end
   end
 
-  def get_transactions(number, account_id, from_id \\ nil, count \\ nil) do
-    if account_id === "acc_#{number}" do
+  def get_transactions(token, account_id, from_id \\ nil, count \\ nil) do
+    if account_id === "acc_#{token}" do
       today = Date.utc_today()
       start = Date.add(today, -90)
       range = Date.range(start, today)
 
       range
-      |> get_date_transactions(number, account_id)
+      |> get_date_transactions(token, account_id)
       |> get_from_id_transactions(from_id)
       |> get_count_transactions(count)
     else
@@ -32,15 +32,15 @@ defmodule TellerWeb.Account.Transactions do
     end
   end
 
-  defp get_date_transactions(date_range, number, account_id) do
-    initial_amount = number |> Integer.mod(500_000) |> then(fn x -> x + 400_000 end)
+  defp get_date_transactions(date_range, token, account_id) do
+    initial_amount = token |> Integer.mod(500_000) |> then(fn x -> x + 400_000 end)
 
     {result, _total} =
       Enum.flat_map_reduce(date_range, initial_amount, fn date, outer_acc ->
         0..Integer.mod(:erlang.phash2(Date.to_string(date)), 5)
         |> Enum.drop(1)
         |> Enum.map_reduce(outer_acc, fn i, acc ->
-          create_transaction(i, number, account_id, date, acc)
+          create_transaction(i, token, account_id, date, acc)
         end)
       end)
 
@@ -65,8 +65,8 @@ defmodule TellerWeb.Account.Transactions do
     end
   end
 
-  defp create_transaction(index, number, account_id, date, previous) do
-    transaction_number = :erlang.phash2("#{number}#{Date.to_string(date)}n#{index}")
+  defp create_transaction(index, token, account_id, date, previous) do
+    transaction_number = :erlang.phash2("#{token}#{Date.to_string(date)}n#{index}")
 
     amount = transaction_number |> Integer.mod(100_000) |> then(fn x -> -x / 100 end)
     running_balance = (previous + amount) |> Float.floor(2)
@@ -101,7 +101,7 @@ defmodule TellerWeb.Account.Transactions do
     {transaction, running_balance}
   end
 
-  defp get_merchant(number) do
+  defp get_merchant(token) do
     merchants = [
       "Uber",
       "Uber Eats",
@@ -184,11 +184,11 @@ defmodule TellerWeb.Account.Transactions do
       "Shell"
     ]
 
-    at = Integer.mod(number, length(merchants))
+    at = Integer.mod(token, length(merchants))
     Enum.at(merchants, at)
   end
 
-  defp get_merchant_category(number) do
+  defp get_merchant_category(token) do
     merchant_categories = [
       "accommodation",
       "advertising",
@@ -219,7 +219,7 @@ defmodule TellerWeb.Account.Transactions do
       "utilities"
     ]
 
-    at = Integer.mod(number, length(merchant_categories))
+    at = Integer.mod(token, length(merchant_categories))
     Enum.at(merchant_categories, at)
   end
 end
