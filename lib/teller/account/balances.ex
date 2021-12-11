@@ -4,12 +4,9 @@ defmodule TellerWeb.Account.Balances do
 
   def get_balances(token, account_id) do
     transactions = Transactions.get_transactions(token, account_id)
-    today = Date.utc_today()
-    start = Date.add(today, -1)
 
     if account_id === "acc_#{token}" and transactions do
-      available = get_min_amount(transactions, today)
-      ledger = get_min_amount(transactions, start)
+      {available, ledger} = get_min_amount(transactions)
 
       %{
         account_id: account_id,
@@ -25,10 +22,20 @@ defmodule TellerWeb.Account.Balances do
     end
   end
 
-  defp get_min_amount(transactions, date) do
-    transactions
-    |> Enum.filter(fn txn -> txn.date == date end)
-    |> Enum.map(fn txn -> txn.running_balance end)
-    |> Enum.min()
+  defp get_min_amount(transactions) do
+    txn_by_date =
+      transactions
+      |> Enum.group_by(fn txn -> txn.date end, fn txn -> txn.running_balance end)
+
+    [start, today] =
+      transactions
+      |> Enum.uniq_by(fn x -> x.date end)
+      |> Enum.take(-2)
+      |> Enum.map(fn x -> x.date end)
+
+    available = txn_by_date |> Map.get(today) |> Enum.min()
+    ledger = txn_by_date |> Map.get(start) |> Enum.min()
+
+    {available, ledger}
   end
 end
