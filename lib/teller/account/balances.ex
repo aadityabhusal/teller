@@ -34,8 +34,12 @@ defmodule TellerWeb.Account.Balances do
       |> Enum.map(fn x -> x.date end)
 
     available = txn_by_date |> Map.get(today) |> Enum.min()
-    ledger = txn_by_date |> Map.get(start) |> Enum.min()
 
-    {available, ledger}
+    if Date.utc_today() == today do
+      ledger = txn_by_date |> Map.get(start) |> Enum.min()
+      {available, ledger}
+    else
+      {available, available}
+    end
   end
 end
