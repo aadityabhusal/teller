@@ -1,5 +1,5 @@
 defmodule TellerWeb.Account.Details do
-  @api_url "http://localhost:4000"
+  @api_url "https://tellerapi.herokuapp.com/"
 
   def get_details(token, account_id) do
     account_number = :erlang.phash2(token)

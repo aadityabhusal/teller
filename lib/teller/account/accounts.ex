@@ -1,5 +1,5 @@
 defmodule TellerWeb.Account.Accounts do
-  @api_url "http://localhost:4000"
+  @api_url "https://tellerapi.herokuapp.com"
 
   def get_accounts(token) do
     [get_account(token, "acc_#{token}")]
