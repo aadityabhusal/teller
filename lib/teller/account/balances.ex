@@ -1,5 +1,5 @@
 defmodule TellerWeb.Account.Balances do
-  @api_url "https://tellerapi.herokuapp.com/"
+  @api_url "https://tellerapi.herokuapp.com"
   alias TellerWeb.Account.Transactions
 
   def get_balances(token, account_id) do
